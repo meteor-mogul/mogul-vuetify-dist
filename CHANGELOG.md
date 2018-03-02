@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.0.4.1] - 2018-03-02
+
+- Fixed typos in README
+
 ## [1.0.4] - 2018-03-02
 
 - Bumped version to match Vuetify

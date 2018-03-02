@@ -3,9 +3,9 @@ Full build of vuetify as a meteor package.
 
 ## What
 
-This provides Vuetify as a Meteor package on Atmosphere.
+This provides [Vuetify](https://vuetifyjs.com/en/) as a Meteor package on Atmosphere.
 
-Once you add this package to your add, Vuetify is bundled into your app through one JavaScript file (`vuetify.js`) and one CSS file (`vuetify.css`).
+Once you add this package to your app, Vuetify is provided through one JavaScript file (`vuetify.js`) that exports `Vuetify` and one CSS file (`vuetify.css`).
 
 ## Why
 
@@ -29,3 +29,29 @@ Once you add this package to your app, you no longer need the above lines of cod
 ## How
 
 From a shell, `$ meteor add meteormogul:vuetify-dist` or manually edit your `.meteor/packages` file to include `meteormogul:vuetify-dist`.
+
+You will also need `Vue` version 2.  You can use the Meteor Mogul package of Vue (`meteormogul:vue-dist`) or you can use the `npm` package of Vue.
+
+If you use `meteormogul:vue-dist`, here's how to get Vue and Vuetify working in your app:
+
+```
+import { Vue } from 'meteor/meteormogul:vue-dist';
+import { Vuetify } from 'meteor/meteormogul:vuetify-dist';
+
+Vue.use(Vuetify);
+
+new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello, world!'
+    }
+});
+```
+
+The above code just demonstrates how to get Vuetify working, and assumes you already have Vue and Meteor figured out.
+
+To see this package in action, including all the gory details about how to get Vue and Meteor working nicely together, clone and try out some of these Meteor Mogul apps:
+
+- [mogul-helloworld](https://github.com/meteor-mogul/mogul-helloworld)
+- [mogul-button](https://github.com/meteor-mogul/mogul-button)
+- [vue-intro](https://github.com/meteor-mogul/vue-intro)

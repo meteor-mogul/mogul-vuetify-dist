@@ -1,9 +1,16 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	/* Added by Meteor Mogul
 	   Export Vuetify symbol so I can import it in meteor */
-
 	export const Vuetify = factory();
-
+	/*
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Vuetify"] = factory();
+	else
+		root["Vuetify"] = factory(); */
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -3095,8 +3102,8 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
   },
 
   watch: {
-    search: function search() {
-      this.updatePagination({ page: 1, totalItems: this.itemsLength });
+    itemsLength: function itemsLength(totalItems) {
+      this.updatePagination({ page: 1, totalItems: totalItems });
     }
   },
 
@@ -3869,7 +3876,8 @@ var dimensions = {
       if (!this.hasWindow) {
         this.hasWindow = typeof window !== 'undefined';
       }
-
+    },
+    checkForPageYOffset: function checkForPageYOffset() {
       if (this.hasWindow) {
         this.pageYOffset = this.getOffsetTop();
       }
@@ -3952,6 +3960,7 @@ var dimensions = {
       var _this3 = this;
 
       this.checkForWindow();
+      this.checkForPageYOffset();
 
       var dimensions = {};
 
@@ -5385,7 +5394,7 @@ function Vuetify(Vue, args) {
   }, args));
 }
 
-Vuetify.version = '1.0.5';
+Vuetify.version = '1.0.6';
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(Vuetify);
@@ -5998,8 +6007,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return css;
+    },
+    vueMeta: function vueMeta() {
+      return {
+        style: [{
+          cssText: this.generatedStyles,
+          type: 'text/css',
+          id: 'vuetify-theme-stylesheet'
+        }]
+      };
     }
   },
+
+  // Regular vue-meta
+  metaInfo: function metaInfo() {
+    return this.vueMeta;
+  },
+
+
+  // Nuxt
+  head: function head() {
+    return this.vueMeta;
+  },
+
 
   watch: {
     generatedStyles: function generatedStyles() {
@@ -6007,27 +6037,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
 
-  beforeCreate: function beforeCreate() {
-    var _this = this;
-
-    if (this.$meta) {
-      // Vue-meta
-      var keyName = this.$nuxt ? 'head' : 'metaInfo';
-      this.$options[keyName] = function () {
-        return {
-          style: [{
-            cssText: _this.generatedStyles,
-            type: 'text/css',
-            id: 'vuetify-theme-stylesheet'
-          }]
-        };
-      };
-    }
-  },
   created: function created() {
     if (this.$meta) {
       // Vue-meta
-      // Handled by beforeCreate hook
+      // Handled by metaInfo()/nuxt()
     } else if (typeof document === 'undefined' && this.$ssrContext) {
       // SSR
       this.$ssrContext.head = this.$ssrContext.head || '';
@@ -9747,7 +9760,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }
       };
 
-      if (this.isAutocomplete) data.props.transition = '';
+      if (this.isAutocomplete) data.props.transition = false;
 
       this.minWidth && (data.props.minWidth = this.minWidth);
 
@@ -10611,7 +10624,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     if (props.light) data.staticClass += ' theme--light';
     if (props.dark) data.staticClass += ' theme--dark';
 
-    return h('li', data, children);
+    return h('div', data, children);
   }
 });
 
@@ -10704,7 +10717,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       'class': this.classes
     };
 
-    return h('ul', data, [this.$slots.default]);
+    return h('div', data, [this.$slots.default]);
   }
 });
 
@@ -10836,12 +10849,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (!icon && !this.$slots.appendIcon) return null;
 
-      return this.$createElement('li', {
+      return this.$createElement('div', {
         staticClass: 'list__group__header__append-icon'
       }, [this.$slots.appendIcon || this.genIcon(icon)]);
     },
     genGroup: function genGroup() {
-      return this.$createElement('ul', {
+      return this.$createElement('div', {
         staticClass: 'list__group__header',
         'class': this.headerClasses,
         on: Object.assign({}, {
@@ -10851,7 +10864,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, [this.genPrependIcon(), this.$slots.activator, this.genAppendIcon()]);
     },
     genItems: function genItems() {
-      return this.$createElement('ul', {
+      return this.$createElement('div', {
         staticClass: 'list__group__items',
         'class': this.itemsClasses,
         directives: [{
@@ -10866,7 +10879,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (!icon && !this.$slots.prependIcon) return null;
 
-      return this.$createElement('li', {
+      return this.$createElement('div', {
         staticClass: 'list__group__header__prepend-icon',
         'class': _defineProperty({}, this.activeClass, this.isActive)
       }, [this.$slots.prependIcon || this.genIcon(icon)]);
@@ -10881,7 +10894,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
 
   render: function render(h) {
-    return h('li', {
+    return h('div', {
       staticClass: 'list__group',
       'class': this.groupClasses
     }, [this.genGroup(), h(__WEBPACK_IMPORTED_MODULE_4__transitions__["a" /* VExpandTransition */], [this.genItems()])]);
@@ -10968,7 +10981,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     data.attrs = Object.assign({}, data.attrs, this.$attrs);
 
-    return h('li', {
+    return h('div', {
       'class': this.listClasses,
       attrs: {
         disabled: this.disabled
@@ -16466,6 +16479,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
+var dirtyTypes = ['color', 'file', 'time', 'date', 'datetime-local', 'week', 'month'];
+
 /* harmony default export */ __webpack_exports__["a"] = ({
   name: 'v-text-field',
 
@@ -16569,7 +16584,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
     isDirty: function isDirty() {
-      return this.lazyValue != null && this.lazyValue.toString().length > 0 || this.badInput || ['time', 'date', 'datetime-local', 'week', 'month'].includes(this.type);
+      return this.lazyValue != null && this.lazyValue.toString().length > 0 || this.badInput || dirtyTypes.includes(this.type);
     },
     isTextarea: function isTextarea() {
       return this.multiLine || this.textarea;

@@ -9,7 +9,7 @@ Once you add this package to your app, Vuetify is provided through one JavaScrip
 
 ## Why
 
-Use this package to get Vuetify functionality in Meteor Mogul apps with inclusion of the `vuetify.js` and `vuetify.css` code.  This allows you develop Meteor Mogul apps without an Internet connection.
+Use this package to get Vuetify functionality in Meteor Mogul apps with inclusion of the `vuetify.js` and `vuetify.css` code.  This allows you to develop Meteor Mogul apps without an Internet connection, which I find useful since my Internet connection is intermittent.
 
 ## How
 

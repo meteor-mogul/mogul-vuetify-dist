@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [1.0.8] - 2018-03-15
+
+- Update to Vuetify 1.0.8.
+- Remove SourceMap URL reference.
+
 ## [1.0.6] - 2018-03-12
 
 - Update to Vuetify 1.0.6.

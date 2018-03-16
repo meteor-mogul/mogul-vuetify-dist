@@ -5394,7 +5394,7 @@ function Vuetify(Vue, args) {
   }, args));
 }
 
-Vuetify.version = '1.0.6';
+Vuetify.version = '1.0.8';
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(Vuetify);
@@ -5745,17 +5745,30 @@ function getDocumentHeight() {
   return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
 }
 
-function getTargetLocation(target, settings) {
-  var documentHeight = getDocumentHeight();
-  var windowHeight = window.innerHeight || (document.documentElement || document.body).clientHeight;
+function getWindowHeight() {
+  return window.innerHeight || (document.documentElement || document.body).clientHeight;
+}
 
+function isVueComponent(obj) {
+  return obj && obj.constructor && obj.constructor.name === 'VueComponent';
+}
+
+function getTargetLocation(target, settings) {
   var location = void 0;
 
-  if (target instanceof Element) location = target.offsetTop;else if (target && target.constructor && target.constructor.name === 'VueComponent') location = target.$el.offsetTop;else if (typeof target === 'string') location = document.querySelector(target).offsetTop;else if (typeof target === 'number') location = target;else location = undefined;
+  if (target instanceof Element) {
+    location = target.offsetTop;
+  } else if (isVueComponent(target)) {
+    location = target.$el.offsetTop;
+  } else if (typeof target === 'string') {
+    location = document.querySelector(target).offsetTop;
+  } else if (typeof target === 'number') {
+    location = target;
+  } else {
+    return undefined;
+  }
 
-  location += settings.offset;
-
-  return Math.round(documentHeight - location < windowHeight ? documentHeight - windowHeight : location);
+  return Math.round(Math.min(Math.max(location + settings.offset, 0), getDocumentHeight() - getWindowHeight()));
 }
 
 function goTo(target, options) {
@@ -16208,13 +16221,7 @@ __WEBPACK_IMPORTED_MODULE_0__VTabs__["a" /* default */].install = function insta
     lazyValue: 'updateTabs',
     right: 'callSlider',
     value: function value(val) {
-      var tab = this.tabs.find(function (tab) {
-        return tab.action === val;
-      }) || this.tabs[val];
-
-      if (!tab) return;
-
-      this.tabClick(tab);
+      this.lazyValue = val;
     },
 
     '$vuetify.application.left': 'onContainerResize',
@@ -17600,4 +17607,3 @@ function install(Vue) {
 /***/ })
 /******/ ])["default"];
 });
-//# sourceMappingURL=vuetify.js.map

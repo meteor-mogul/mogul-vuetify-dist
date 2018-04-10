@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.0.13] - 2018-04-09
+
+- Update to vuetify 1.0.13
+
 ## [1.0.11] - 2018-03-27
 
 - Update to vuetify 1.0.11

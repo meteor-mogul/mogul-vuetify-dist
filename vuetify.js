@@ -1828,7 +1828,6 @@ function validateAttachTarget(val) {
   methods: {
     save: function save(value) {
       this.originalValue = value;
-      this.$emit('update:returnValue', value);
       this.isActive = false;
     }
   }
@@ -5400,7 +5399,7 @@ function Vuetify(Vue, args) {
   }, args));
 }
 
-Vuetify.version = '1.0.11';
+Vuetify.version = '1.0.13';
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(Vuetify);
@@ -7273,7 +7272,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         children.push(this.$createElement(__WEBPACK_IMPORTED_MODULE_1__VProgressCircular__["a" /* default */], {
           props: {
             indeterminate: true,
-            size: 26
+            size: 23,
+            width: 2
           }
         }));
       } else {
@@ -15740,6 +15740,12 @@ __WEBPACK_IMPORTED_MODULE_0__VTabs__["a" /* default */].install = function insta
       transitionTime: 300
     };
   },
+
+
+  watch: {
+    tabs: 'onResize'
+  },
+
   mounted: function mounted() {
     this.checkIcons();
   },

@@ -4932,6 +4932,9 @@ p {
 .avatar img,
 .avatar .icon {
   border-radius: 50%;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
   height: inherit;
   width: inherit;
 }
@@ -7766,7 +7769,6 @@ p {
   border-top: 1px solid rgba(0,0,0,0.12);
 }
 .menu__content > .card {
-  contain: content;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;
 }
@@ -11761,8 +11763,8 @@ table.table tfoot tr td {
 .application .theme--light.tabs__bar .tabs__div {
   color: rgba(0,0,0,0.87);
 }
-.theme--light .tabs__bar .tabs__div.tabs__item--disabled,
-.application .theme--light.tabs__bar .tabs__div.tabs__item--disabled {
+.theme--light .tabs__bar .tabs__item--disabled,
+.application .theme--light.tabs__bar .tabs__item--disabled {
   color: rgba(0,0,0,0.26);
 }
 .theme--dark .tabs__bar,
@@ -11773,8 +11775,8 @@ table.table tfoot tr td {
 .application .theme--dark.tabs__bar .tabs__div {
   color: #fff;
 }
-.theme--dark .tabs__bar .tabs__div.tabs__item--disabled,
-.application .theme--dark.tabs__bar .tabs__div.tabs__item--disabled {
+.theme--dark .tabs__bar .tabs__item--disabled,
+.application .theme--dark.tabs__bar .tabs__item--disabled {
   color: rgba(255,255,255,0.3);
 }
 .tabs {
@@ -11930,6 +11932,9 @@ table.table tfoot tr td {
 }
 .tabs__item:not(.tabs__item--active) {
   opacity: 0.7;
+}
+.tabs__item--disabled {
+  pointer-events: none;
 }
 .tabs__slider {
   height: 2px;

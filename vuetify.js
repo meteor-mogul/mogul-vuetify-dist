@@ -1,9 +1,9 @@
 (function webpackUniversalModuleDefinition(root, factory) {
-  /* Added by Meteor Mogul
+	/* Added by Meteor Mogul
 	   Export Vuetify symbol so I can import it in meteor */
 	export const Vuetify = factory();
 	/*
-  if(typeof exports === 'object' && typeof module === 'object')
+	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
@@ -311,10 +311,11 @@ function createRange(length) {
 
 function getZIndex(el) {
   if (!el || el.nodeType !== Node.ELEMENT_NODE) return 0;
-  var zi = document.defaultView.getComputedStyle(el).getPropertyValue('z-index');
-  if (isNaN(zi)) return getZIndex(el.parentNode);
 
-  return zi;
+  var index = window.getComputedStyle(el).getPropertyValue('z-index');
+
+  if (isNaN(index)) return getZIndex(el.parentNode);
+  return index;
 }
 
 var tagsToReplace = {
@@ -5399,7 +5400,7 @@ function Vuetify(Vue, args) {
   }, args));
 }
 
-Vuetify.version = '1.0.10';
+Vuetify.version = '1.0.11';
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(Vuetify);
@@ -5755,16 +5756,18 @@ function getWindowHeight() {
 }
 
 function isVueComponent(obj) {
-  return obj && obj.constructor && obj.constructor.name === 'VueComponent';
+  return obj != null && obj._isVue;
 }
 
 function getTargetLocation(target, settings) {
   var location = void 0;
 
+  if (isVueComponent(target)) {
+    target = target.$el;
+  }
+
   if (target instanceof Element) {
-    location = target.offsetTop;
-  } else if (isVueComponent(target)) {
-    location = target.$el.offsetTop;
+    location = target.getBoundingClientRect().top + window.scrollY;
   } else if (typeof target === 'string') {
     location = document.querySelector(target).offsetTop;
   } else if (typeof target === 'number') {
@@ -5788,7 +5791,7 @@ function goTo(target, options) {
   var easingFunction = typeof settings.easing === 'function' ? settings.easing : __WEBPACK_IMPORTED_MODULE_1__util_easing_patterns__[settings.easing];
 
   if (isNaN(targetLocation)) {
-    var type = target && target.constructor ? target.constructor.name : target;
+    var type = target == null ? target : target.constructor.name;
     return Object(__WEBPACK_IMPORTED_MODULE_0__util_console__["a" /* consoleError */])('Target must be a Selector/Number/DOMElement/VueComponent, received ' + type + ' instead.');
   }
   if (!easingFunction) return Object(__WEBPACK_IMPORTED_MODULE_0__util_console__["a" /* consoleError */])('Easing function \'' + settings.easing + '\' not found.');
@@ -7358,13 +7361,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
   computed: {
     calculatedSize: function calculatedSize() {
-      var size = Number(this.size);
-
-      if (this.button) {
-        size += 8;
-      }
-
-      return size;
+      return Number(this.size) + (this.button ? 8 : 0);
     },
     circumference: function circumference() {
       return 2 * Math.PI * this.radius;
@@ -7375,9 +7372,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         'progress-circular--indeterminate': this.indeterminate,
         'progress-circular--button': this.button
       });
-    },
-    cxy: function cxy() {
-      return this.indeterminate && !this.button ? 50 : this.calculatedSize / 2;
     },
     normalizedValue: function normalizedValue() {
       if (this.value < 0) {
@@ -7391,7 +7385,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.value;
     },
     radius: function radius() {
-      return this.indeterminate && !this.button ? 20 : (this.calculatedSize - this.width) / 2;
+      return 20;
     },
     strokeDashArray: function strokeDashArray() {
       return Math.round(this.circumference * 1000) / 1000;
@@ -7399,22 +7393,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     strokeDashOffset: function strokeDashOffset() {
       return (100 - this.normalizedValue) / 100 * this.circumference + 'px';
     },
+    strokeWidth: function strokeWidth() {
+      return this.width / this.size * this.viewBoxSize * 2;
+    },
     styles: function styles() {
       return {
         height: this.calculatedSize + 'px',
         width: this.calculatedSize + 'px'
       };
     },
-    svgSize: function svgSize() {
-      return this.indeterminate ? false : this.calculatedSize;
-    },
     svgStyles: function svgStyles() {
       return {
         transform: 'rotate(' + this.rotate + 'deg)'
       };
     },
-    viewBox: function viewBox() {
-      return this.indeterminate ? '25 25 50 50' : false;
+    viewBoxSize: function viewBoxSize() {
+      return this.radius / (1 - this.width / this.size);
     }
   },
 
@@ -7424,25 +7418,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         class: 'progress-circular__' + name,
         attrs: {
           fill: 'transparent',
-          cx: this.cxy,
-          cy: this.cxy,
+          cx: 2 * this.viewBoxSize,
+          cy: 2 * this.viewBoxSize,
           r: this.radius,
-          'stroke-width': this.width,
+          'stroke-width': this.strokeWidth,
           'stroke-dasharray': this.strokeDashArray,
           'stroke-dashoffset': offset
         }
       });
     },
     genSvg: function genSvg(h) {
-      var children = [!this.indeterminate && this.genCircle(h, 'underlay', 0), this.genCircle(h, 'overlay', this.strokeDashOffset)];
+      var children = [this.indeterminate || this.genCircle(h, 'underlay', 0), this.genCircle(h, 'overlay', this.strokeDashOffset)];
 
       return h('svg', {
         style: this.svgStyles,
         attrs: {
           xmlns: 'http://www.w3.org/2000/svg',
-          height: this.svgSize,
-          width: this.svgSize,
-          viewBox: this.viewBox
+          viewBox: this.viewBoxSize + ' ' + this.viewBoxSize + ' ' + 2 * this.viewBoxSize + ' ' + 2 * this.viewBoxSize
         }
       }, children);
     }
@@ -11170,7 +11162,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     autocomplete: Boolean,
     browserAutocomplete: {
       type: String,
-      default: 'on'
+      default: 'off'
     },
     cacheItems: Boolean,
     chips: Boolean,
@@ -16308,8 +16300,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     action: function action() {
       var to = this.to || this.href;
 
-      if (this.$router && this.to) {
-        var resolve = this.$router.resolve(this.to);
+      if (this.$router && this.to === Object(this.to)) {
+        var resolve = this.$router.resolve(this.to, this.$route, this.append);
 
         to = resolve.href;
       }

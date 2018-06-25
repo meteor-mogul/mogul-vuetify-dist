@@ -1,7 +1,7 @@
 Package.describe({
   name: 'meteormogul:vuetify-dist',
   // Will keep this in synch with version of Vuetify exported
-  version: '1.0.13',
+  version: '1.0.19',
   // Brief, one-line summary of the package.
   summary: 'Simple binding to Vuetify for Meteor',
   // URL to the Git repository containing the source code for this package.
